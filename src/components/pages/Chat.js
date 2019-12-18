@@ -4,7 +4,7 @@ import '../../assets/scss/Chat.scss';
 // Partials
 import Message from '../partials/Message';
 
-const Chat = () => {
+const Chat = ({ match }) => {
   return (
     <div className='Chat'>
       <div className='messages'>
