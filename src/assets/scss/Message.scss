@@ -1,0 +1,29 @@
+.Message {
+  .msg {
+    background: #636163;
+    max-width: 40%;
+    padding: 20px;
+    margin: 25px;
+    border-radius: 5px;
+    position: relative;
+
+    .username {
+      position: absolute;
+      top: -10px;
+      background: #04a0de;
+      font-size: 16px;
+      line-height: 16px;
+      border-radius: 3px;
+      padding: 3px 5px;
+    }
+    &.mine {
+      background: #04a0de;
+      float: right;
+      .username {
+        display: none;
+        background: #636163;
+        right: 20px;
+      }
+    }
+  }
+}

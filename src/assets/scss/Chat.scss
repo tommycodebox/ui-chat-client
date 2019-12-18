@@ -1,0 +1,95 @@
+.Chat {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .messages {
+    width: 100%;
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .write-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    box-shadow: 0 -2px 20px 0 rgba(0, 0, 0, 0.315);
+
+    .write {
+      width: 100%;
+      height: 100%;
+      position: relative;
+
+      &:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 8px;
+        background: #04a0de57;
+        bottom: 0;
+        left: 0;
+        transition: 0.3s ease;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0%;
+        height: 8px;
+        background: #04a0de;
+        bottom: 0;
+        left: 0;
+        transform-origin: bottom;
+        transition: 0.3s ease;
+      }
+
+      &:hover:after {
+        width: 100%;
+      }
+
+      input {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        font-size: 24px;
+        padding: 10px 40px 18px 40px;
+        background: none;
+        border: none;
+        color: #fff;
+        &:focus {
+          outline: none;
+        }
+      }
+      button.send {
+        position: absolute;
+        height: 50px;
+        padding: 0 40px;
+        right: 20px;
+        background: #04a0de;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        box-shadow: 0 0 5px 0 #04a0de9f;
+        top: calc(50% - 29px);
+        cursor: pointer;
+        transition: 0.2s ease;
+        &:focus {
+          outline: none;
+        }
+        &:hover,
+        &:active {
+          padding: 0 45px;
+          right: 15px;
+          box-shadow: 0 0 10px 0 #04a0de9f;
+        }
+        &:active {
+          transform: translate(0, 1px);
+        }
+      }
+    }
+  }
+}
