@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
-import '../../assets/scss/Landing.scss';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
+// Assets
+import '../../assets/scss/Landing.scss';
 
 // Routing
 import { withRouter } from 'react-router-dom';
 
 // Redux
 import { connect } from 'react-redux';
-import { joinChat } from '../../actions/user';
+import { joinChat, setUser } from '../../actions/user';
 
-const Landing = ({ socket, joinChat, history }) => {
+// Utils
+import toast from '../../utils/toast';
+
+const Landing = ({ socket, joinChat, setUser, history, user }) => {
   const [uname, setUname] = useState('');
   const joinChatHandler = e => {
     e.preventDefault();
@@ -19,6 +24,34 @@ const Landing = ({ socket, joinChat, history }) => {
       }
     }
   };
+  // On successful chat join, set user state
+  useEffect(() => {
+    socket &&
+      socket.on('join-chat-success', user => {
+        setUser(user);
+      });
+    return () => {
+      socket && socket.off('join-chat-success');
+    };
+  }, [socket, setUser]);
+
+  // Redirect when user state is filled
+  useEffect(() => {
+    if (user) {
+      history.push('/chat');
+    }
+  }, [user, history]);
+
+  // On 'username-taken' event, dispay tost error
+  useEffect(() => {
+    socket &&
+      socket.on('username-taken', msg => {
+        toast('Bummer!', msg, 'danger');
+      });
+    return () => {
+      socket && socket.off('username-taken');
+    };
+  }, [socket]);
   return (
     <div className='Landing'>
       <h1 className='welcome'>Welcome to UI chat, friend!</h1>
@@ -40,11 +73,16 @@ const Landing = ({ socket, joinChat, history }) => {
 };
 
 Landing.propTypes = {
-  joinChat: PropTypes.func.isRequired
+  joinChat: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  socket: state.socket
+  socket: state.socket,
+  user: state.user
 });
 
-export default connect(mapStateToProps, { joinChat })(withRouter(Landing));
+export default connect(mapStateToProps, { joinChat, setUser })(
+  withRouter(Landing)
+);
