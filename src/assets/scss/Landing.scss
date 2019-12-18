@@ -74,8 +74,10 @@
 
       &:hover label,
       input:focus ~ label,
-      label.active {
-        top: -20px;
+      &.active label {
+        top: -16px;
+        color: #04a0de;
+        font-size: 14px;
       }
     }
 
