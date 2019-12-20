@@ -12,12 +12,27 @@ import Navbar from './Navbar';
 
 // Redux
 import { connect } from 'react-redux';
-import { setSocket } from '../../actions/socket';
+import { setSocket, serverDown, socketConnected } from '../../actions/socket';
 
-const Main = ({ setSocket }) => {
+const Main = ({ setSocket, socket, serverDown, socketConnected }) => {
   useEffect(() => {
     setSocket();
   }, [setSocket]);
+
+  useEffect(() => {
+    socket &&
+      socket.on('disconnect', () => {
+        serverDown(socket);
+      });
+  }, [socket, serverDown]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('connect', () => {
+        socketConnected();
+      });
+    }
+  }, [socket, socketConnected]);
   return (
     <div className='Main'>
       <Navbar />
@@ -30,7 +45,18 @@ const Main = ({ setSocket }) => {
 };
 
 Main.propTypes = {
-  setSocket: PropTypes.func.isRequired
+  setSocket: PropTypes.func.isRequired,
+  socket: PropTypes.object.isRequired,
+  serverDown: PropTypes.func.isRequired,
+  socketConnected: PropTypes.func.isRequired
 };
 
-export default connect(null, { setSocket })(Main);
+const mapStateToProps = state => ({
+  socket: state.socket
+});
+
+export default connect(mapStateToProps, {
+  setSocket,
+  serverDown,
+  socketConnected
+})(Main);

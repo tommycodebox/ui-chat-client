@@ -7,8 +7,9 @@ import { ReactComponent as Logo } from '../../assets/img/ui-logo.svg';
 
 // Redux
 import { connect } from 'react-redux';
+import { disconnect } from '../../actions/user';
 
-const Navbar = ({ user }) => {
+const Navbar = ({ user, disconnect, socket }) => {
   return (
     <div className='Navbar'>
       <div className='brand'>
@@ -19,7 +20,9 @@ const Navbar = ({ user }) => {
           <div className='username'>
             Connected as: <span>{user.username}</span>
           </div>
-          <button className='disconnect'>Disconnect</button>
+          <button className='disconnect' onClick={() => disconnect(socket)}>
+            Disconnect
+          </button>
         </div>
       )}
     </div>
@@ -27,11 +30,14 @@ const Navbar = ({ user }) => {
 };
 
 Navbar.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  disconnect: PropTypes.func.isRequired,
+  socket: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  socket: state.socket
 });
 
-export default connect(mapStateToProps)(Navbar);
+export default connect(mapStateToProps, { disconnect })(Navbar);

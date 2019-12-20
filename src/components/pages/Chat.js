@@ -13,23 +13,41 @@ import Message from '../partials/Message';
 // Redux
 import { connect } from 'react-redux';
 import { newMessage, sendMessage } from '../../actions/messages';
+import { userLeft } from '../../actions/user';
 
-const Chat = ({ user, messages, socket, newMessage, sendMessage }) => {
+const Chat = ({
+  user,
+  messages,
+  socket,
+  newMessage,
+  sendMessage,
+  userLeft
+}) => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    socket &&
-      socket.on('message', msg => {
-        newMessage(msg);
-      });
+    socket && socket.on('message', msg => newMessage(msg));
     return () => {
       socket && socket.off('message');
     };
   }, [socket, newMessage]);
 
+  useEffect(() => {
+    socket &&
+      socket.on('bye', user => {
+        if (user) userLeft(user.username);
+      });
+    return () => {
+      socket && socket.off('bye');
+    };
+  }, [socket, userLeft]);
+
   const sendMessageHandler = e => {
     e.preventDefault();
-    sendMessage(message, user.username, socket);
+    if (message.length > 0) {
+      sendMessage(message, user.username, socket);
+      setMessage('');
+    }
   };
 
   if (!user) return <Redirect to='/' />;
@@ -37,14 +55,13 @@ const Chat = ({ user, messages, socket, newMessage, sendMessage }) => {
     <div className='Chat'>
       <div className='messages'>
         {messages.map(msg => (
-          <Message me={user.username} username={msg.user} text={msg.text} />
+          <Message
+            me={user.username}
+            username={msg.user}
+            text={msg.text}
+            left={msg.left}
+          />
         ))}
-        {/* <Message
-          type='ext'
-          username='Tommy'
-          text='This is a pretty long message'
-        />
-        <Message type='mine' username='Tommy' text='This is message' /> */}
       </div>
       <div className='write-wrapper'>
         <form className='write' onSubmit={sendMessageHandler}>
@@ -66,7 +83,8 @@ Chat.propTypes = {
   messages: PropTypes.array.isRequired,
   socket: PropTypes.object.isRequired,
   newMessage: PropTypes.func.isRequired,
-  sendMessage: PropTypes.func.isRequired
+  sendMessage: PropTypes.func.isRequired,
+  userLeft: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -75,4 +93,6 @@ const mapStateToProps = state => ({
   socket: state.socket
 });
 
-export default connect(mapStateToProps, { newMessage, sendMessage })(Chat);
+export default connect(mapStateToProps, { newMessage, sendMessage, userLeft })(
+  Chat
+);

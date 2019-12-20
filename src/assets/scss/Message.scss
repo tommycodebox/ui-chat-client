@@ -26,4 +26,12 @@
       }
     }
   }
+  &.left {
+    .msg {
+      background: none;
+    }
+    .username {
+      background: #636163;
+    }
+  }
 }

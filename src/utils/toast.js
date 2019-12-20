@@ -1,7 +1,7 @@
 import 'animate.css';
 import { store } from 'react-notifications-component';
 
-const toast = (title, message, type) => {
+const toast = (title, message, type, duration = 5000) => {
   store.addNotification({
     title,
     message,
@@ -11,7 +11,7 @@ const toast = (title, message, type) => {
     animationIn: ['animated', 'flipInY'],
     animationOut: ['animated', 'fadeOut'],
     dismiss: {
-      duration: 5000,
+      duration,
       onScreen: true,
       pauseOnHover: true
     }
