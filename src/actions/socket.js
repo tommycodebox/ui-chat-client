@@ -4,7 +4,8 @@ import toast from '../utils/toast';
 
 // Set socket
 export const setSocket = () => dispatch => {
-  const io = openSocket('http://localhost:5000');
+  // const io = openSocket('http://localhost:5000');
+  const io = openSocket('http://ui-chat-server.viq.app');
   dispatch({
     type: SET_SOCKET,
     payload: io
