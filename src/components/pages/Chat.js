@@ -13,7 +13,7 @@ import Message from '../partials/Message';
 // Redux
 import { connect } from 'react-redux';
 import { newMessage, sendMessage } from '../../actions/messages';
-import { userLeft } from '../../actions/user';
+import { userLeft, inactive, inactiveUser } from '../../actions/user';
 
 const Chat = ({
   user,
@@ -21,26 +21,35 @@ const Chat = ({
   socket,
   newMessage,
   sendMessage,
-  userLeft
+  userLeft,
+  inactive,
+  inactiveUser
 }) => {
   const [message, setMessage] = useState('');
 
+  // Socket listeners
   useEffect(() => {
-    socket && socket.on('message', msg => newMessage(msg));
-    return () => {
-      socket && socket.off('message');
-    };
-  }, [socket, newMessage]);
-
-  useEffect(() => {
-    socket &&
+    if (socket) {
+      socket.on('message', msg => newMessage(msg));
       socket.on('bye', user => {
         if (user) userLeft(user.username);
       });
+      socket.on('AFK', msg => {
+        inactive(msg);
+      });
+      socket.on('inactive-user', user => {
+        inactiveUser(user);
+      });
+    }
     return () => {
-      socket && socket.off('bye');
+      if (socket) {
+        socket.off('message');
+        socket.off('bye');
+        socket.off('AFK');
+        socket.off('inactive-user');
+      }
     };
-  }, [socket, userLeft]);
+  }, [socket, newMessage, userLeft, inactive, inactiveUser]);
 
   const sendMessageHandler = e => {
     e.preventDefault();
@@ -79,12 +88,14 @@ const Chat = ({
 };
 
 Chat.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
   messages: PropTypes.array.isRequired,
   socket: PropTypes.object.isRequired,
   newMessage: PropTypes.func.isRequired,
   sendMessage: PropTypes.func.isRequired,
-  userLeft: PropTypes.func.isRequired
+  userLeft: PropTypes.func.isRequired,
+  inactive: PropTypes.func.isRequired,
+  inactiveUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -93,6 +104,10 @@ const mapStateToProps = state => ({
   socket: state.socket
 });
 
-export default connect(mapStateToProps, { newMessage, sendMessage, userLeft })(
-  Chat
-);
+export default connect(mapStateToProps, {
+  newMessage,
+  sendMessage,
+  userLeft,
+  inactive,
+  inactiveUser
+})(Chat);

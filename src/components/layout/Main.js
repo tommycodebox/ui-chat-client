@@ -46,7 +46,7 @@ const Main = ({ setSocket, socket, serverDown, socketConnected }) => {
 
 Main.propTypes = {
   setSocket: PropTypes.func.isRequired,
-  socket: PropTypes.object.isRequired,
+  socket: PropTypes.object,
   serverDown: PropTypes.func.isRequired,
   socketConnected: PropTypes.func.isRequired
 };

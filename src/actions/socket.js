@@ -17,7 +17,11 @@ export const serverDown = socket => dispatch => {
   dispatch({
     type: SERVER_DOWN
   });
-  toast('Uh oh!', 'Looks like the server went down', 'danger', 20000);
+  toast(
+    'Uh oh!',
+    'Looks like the server went down, trying to reconnect...',
+    'danger'
+  );
   dispatch(setSocket());
 };
 

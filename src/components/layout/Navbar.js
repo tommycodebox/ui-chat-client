@@ -30,9 +30,9 @@ const Navbar = ({ user, disconnect, socket }) => {
 };
 
 Navbar.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
   disconnect: PropTypes.func.isRequired,
-  socket: PropTypes.object.isRequired
+  socket: PropTypes.object
 };
 
 const mapStateToProps = state => ({

@@ -1,4 +1,10 @@
-import { SET_USER, USER_LEFT, DISCONNECT } from './types';
+import {
+  SET_USER,
+  USER_LEFT,
+  DISCONNECT,
+  INACTIVE,
+  INACTIVE_USER
+} from './types';
 import toast from '../utils/toast';
 
 // Join chat
@@ -40,4 +46,25 @@ export const disconnect = socket => dispatch => {
   });
 
   toast('Bye bye!', 'We looking forward to see you again!', 'success');
+};
+
+// Disconnected due to inavtivity
+export const inactive = msg => dispatch => {
+  toast('Uh oh!', msg, 'danger');
+
+  dispatch({
+    type: INACTIVE
+  });
+};
+
+// Inactive user disconnected
+export const inactiveUser = user => dispatch => {
+  dispatch({
+    type: INACTIVE_USER,
+    payload: {
+      user,
+      text: 'I was too lazy to type, so I got disconnected due to inactivity',
+      left: true
+    }
+  });
 };

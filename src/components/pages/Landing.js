@@ -20,7 +20,15 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
     e.preventDefault();
     if (socket) {
       if (uname.length > 0) {
-        joinChat(socket, uname, history);
+        if (socket.connected) {
+          joinChat(socket, uname, history);
+        } else {
+          toast(
+            'Uh uh!',
+            'Looks like server is unavailable ATM, please try again later.',
+            'danger'
+          );
+        }
       }
     }
   };
@@ -75,7 +83,7 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
 Landing.propTypes = {
   joinChat: PropTypes.func.isRequired,
   setUser: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({

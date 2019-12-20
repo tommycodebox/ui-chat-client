@@ -8,6 +8,8 @@ export const SET_USER = 'SET_USER';
 export const JOIN_CHAT = 'JOIN_CHAT';
 export const USER_LEFT = 'USER_LEFT';
 export const DISCONNECT = 'DISCONNECT';
+export const INACTIVE = 'INACTIVE';
+export const INACTIVE_USER = 'INACTIVE_USER';
 
 // Messages
 export const NEW_MESSAGE = 'NEW_MESSAGE';
