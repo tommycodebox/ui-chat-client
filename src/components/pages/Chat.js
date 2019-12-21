@@ -51,6 +51,13 @@ const Chat = ({
     };
   }, [socket, newMessage, userLeft, inactive, inactiveUser]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      const msgList = document.querySelector('.messages');
+      msgList.scrollTop = msgList.scrollHeight;
+    }
+  }, [messages]);
+
   const sendMessageHandler = e => {
     e.preventDefault();
     if (message.length > 0) {
