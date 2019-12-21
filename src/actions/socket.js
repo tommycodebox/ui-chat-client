@@ -2,7 +2,10 @@ import { SET_SOCKET, SERVER_DOWN, SOCKET_CONNECTED } from './types';
 import openSocket from 'socket.io-client';
 import toast from '../utils/toast';
 
-const serverURI = process.env.REACT_APP_CHAT_SERVER || 'http://localhost:5000';
+const serverURI =
+  process.env.NODE_ENV === 'production'
+    ? 'https://chat-server.viq.app'
+    : 'http://localhost:5000';
 
 // Set socket
 export const setSocket = () => dispatch => {
