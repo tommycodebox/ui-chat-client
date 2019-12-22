@@ -1,9 +1,9 @@
 import React from 'react';
 import '../../assets/scss/Message.scss';
 
-const Message = ({ me, username, text, left }) => {
+const Message = ({ me, username, text, left, joined }) => {
   return (
-    <div className={`Message ${left ? 'left' : ''}`}>
+    <div className={`Message ${left ? 'left' : ''} ${joined ? 'joined' : ''}`}>
       <div className={`msg ${me === username ? 'mine' : 'ext'}`}>
         <div className='username'>{username}</div>
         <div className='text'>{text}</div>

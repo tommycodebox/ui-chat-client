@@ -14,6 +14,7 @@ import Message from '../partials/Message';
 import { connect } from 'react-redux';
 import { newMessage, sendMessage } from '../../actions/messages';
 import { userLeft, inactive, inactiveUser } from '../../actions/user';
+import { setUsers } from '../../actions/users';
 
 const Chat = ({
   user,
@@ -23,7 +24,8 @@ const Chat = ({
   sendMessage,
   userLeft,
   inactive,
-  inactiveUser
+  inactiveUser,
+  setUsers
 }) => {
   const [message, setMessage] = useState('');
 
@@ -32,12 +34,14 @@ const Chat = ({
     if (socket) {
       socket.on('message', msg => newMessage(msg));
       socket.on('bye', user => {
+        socket.emit('hm-users');
         if (user) userLeft(user.username);
       });
       socket.on('AFK', msg => {
         inactive(msg);
       });
       socket.on('inactive-user', user => {
+        socket.emit('hm-users');
         inactiveUser(user);
       });
     }
@@ -49,7 +53,7 @@ const Chat = ({
         socket.off('inactive-user');
       }
     };
-  }, [socket, newMessage, userLeft, inactive, inactiveUser]);
+  }, [socket, newMessage, userLeft, inactive, inactiveUser, setUsers]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -70,12 +74,14 @@ const Chat = ({
   return (
     <div className='Chat'>
       <div className='messages'>
-        {messages.map(msg => (
+        {messages.map((msg, i) => (
           <Message
+            key={i}
             me={user.username}
             username={msg.user}
             text={msg.text}
             left={msg.left}
+            joined={msg.joined}
           />
         ))}
       </div>
@@ -102,7 +108,8 @@ Chat.propTypes = {
   sendMessage: PropTypes.func.isRequired,
   userLeft: PropTypes.func.isRequired,
   inactive: PropTypes.func.isRequired,
-  inactiveUser: PropTypes.func.isRequired
+  inactiveUser: PropTypes.func.isRequired,
+  setUsers: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -116,5 +123,6 @@ export default connect(mapStateToProps, {
   sendMessage,
   userLeft,
   inactive,
-  inactiveUser
+  inactiveUser,
+  setUsers
 })(Chat);

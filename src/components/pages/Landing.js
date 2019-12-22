@@ -37,6 +37,7 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
     socket &&
       socket.on('join-chat-success', user => {
         setUser(user);
+        socket.emit('hm-users');
       });
     return () => {
       socket && socket.off('join-chat-success');

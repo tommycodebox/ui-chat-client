@@ -32,7 +32,7 @@ export const serverDown = socket => dispatch => {
 
 // Socket connected
 export const socketConnected = () => dispatch => {
-  toast('Worked!', 'Socket connection established', 'success');
+  toast('Nice!', 'Looks like server is up and can be reached!', 'success');
   dispatch({
     type: SOCKET_CONNECTED
   });

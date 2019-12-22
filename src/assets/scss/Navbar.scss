@@ -11,6 +11,20 @@
     background: #04a0de;
   }
 
+  .center {
+    height: 100%;
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 50px;
+    color: rgba(255, 255, 255, 0.5);
+
+    span {
+      color: #fff;
+    }
+  }
+
   .right {
     float: right;
     height: 100%;

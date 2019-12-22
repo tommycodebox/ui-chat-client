@@ -26,12 +26,18 @@
       }
     }
   }
-  &.left {
+  &.left,
+  &.joined {
     .msg {
       background: none;
     }
     .username {
       background: #636163;
+    }
+  }
+  &.joined {
+    .username {
+      background: #04a0de;
     }
   }
 }
