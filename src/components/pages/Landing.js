@@ -32,15 +32,23 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
       }
     }
   };
-  // On successful chat join, set user state
   useEffect(() => {
-    socket &&
+    if (socket) {
       socket.on('join-chat-success', user => {
         setUser(user);
         socket.emit('hm-users');
       });
+      socket.on('username-taken', msg => {
+        toast('Bummer!', msg, 'danger');
+      });
+      socket.on('validation-error', error => {
+        toast('Uh uh!', error, 'danger');
+      });
+    }
     return () => {
       socket && socket.off('join-chat-success');
+      socket && socket.off('username-taken');
+      socket && socket.off('validation-error');
     };
   }, [socket, setUser]);
 
@@ -50,17 +58,6 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
       history.push('/chat');
     }
   }, [user, history]);
-
-  // On 'username-taken' event, dispay tost error
-  useEffect(() => {
-    socket &&
-      socket.on('username-taken', msg => {
-        toast('Bummer!', msg, 'danger');
-      });
-    return () => {
-      socket && socket.off('username-taken');
-    };
-  }, [socket]);
   return (
     <div className='Landing'>
       <h1 className='welcome'>Welcome to UI chat, friend!</h1>
