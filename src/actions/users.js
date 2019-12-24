@@ -15,7 +15,8 @@ export const newUserJoined = user => dispatch => {
     payload: {
       user: user.username,
       text: 'Just joined the chat',
-      joined: true
+      joined: true,
+      time: Date.now()
     }
   });
 };

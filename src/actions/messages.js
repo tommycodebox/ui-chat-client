@@ -12,7 +12,8 @@ export const newMessage = msg => dispatch => {
 export const sendMessage = (text, user, socket) => dispatch => {
   const message = {
     text,
-    user
+    user,
+    time: Date.now()
   };
 
   socket.emit('new-message', message);

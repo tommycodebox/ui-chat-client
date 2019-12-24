@@ -6,7 +6,11 @@
     margin: 25px;
     border-radius: 5px;
     position: relative;
-
+    .time {
+      position: absolute;
+      bottom: -20px;
+      color: rgba(255, 255, 255, 0.5);
+    }
     .username {
       position: absolute;
       top: -10px;
@@ -24,6 +28,9 @@
         background: #636163;
         right: 20px;
       }
+      .time {
+        display: none;
+      }
     }
   }
   &.left,
@@ -33,6 +40,9 @@
     }
     .username {
       background: #636163;
+    }
+    .time {
+      bottom: -10px;
     }
   }
   &.joined {

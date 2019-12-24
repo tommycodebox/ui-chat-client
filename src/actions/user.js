@@ -32,7 +32,8 @@ export const userLeft = user => dispatch => {
     payload: {
       user,
       text: 'I leaving guys, bye bye!',
-      left: true
+      left: true,
+      time: Date.now()
     }
   });
 };
@@ -64,7 +65,8 @@ export const inactiveUser = user => dispatch => {
     payload: {
       user,
       text: 'I was too lazy to type, so I got disconnected due to inactivity',
-      left: true
+      left: true,
+      time: Date.now()
     }
   });
 };
