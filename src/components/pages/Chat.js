@@ -7,53 +7,32 @@ import '../../assets/scss/Chat.scss';
 // Routing
 import { Redirect } from 'react-router-dom';
 
-// Partials
-import Message from '../partials/Message';
+// Components
+import Messages from '../layout/Messages';
+import WriteMessage from '../layout/WriteMessage';
 
 // Redux
 import { connect } from 'react-redux';
-import { newMessage, sendMessage } from '../../actions/messages';
-import { userLeft, inactive, inactiveUser } from '../../actions/user';
-import { setUsers } from '../../actions/users';
+import { sendMessage } from '../../actions/messages';
+import { setChatListeners, clearChatListeners } from '../../actions/socket';
 
 const Chat = ({
   user,
   messages,
   socket,
-  newMessage,
   sendMessage,
-  userLeft,
-  inactive,
-  inactiveUser,
-  setUsers
+  setChatListeners,
+  clearChatListeners
 }) => {
   const [message, setMessage] = useState('');
 
   // Socket listeners
   useEffect(() => {
-    if (socket) {
-      socket.on('message', msg => newMessage(msg));
-      socket.on('bye', user => {
-        socket.emit('hm-users');
-        if (user) userLeft(user.username);
-      });
-      socket.on('AFK', msg => {
-        inactive(msg);
-      });
-      socket.on('inactive-user', user => {
-        socket.emit('hm-users');
-        inactiveUser(user);
-      });
-    }
+    if (socket) setChatListeners(socket);
     return () => {
-      if (socket) {
-        socket.off('message');
-        socket.off('bye');
-        socket.off('AFK');
-        socket.off('inactive-user');
-      }
+      if (socket) clearChatListeners(socket);
     };
-  }, [socket, newMessage, userLeft, inactive, inactiveUser, setUsers]);
+  }, [socket, setChatListeners, clearChatListeners]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -73,29 +52,12 @@ const Chat = ({
   if (!user) return <Redirect to='/' />;
   return (
     <div className='Chat'>
-      <div className='messages'>
-        {messages.map((msg, i) => (
-          <Message
-            key={i}
-            me={user.username}
-            username={msg.user}
-            text={msg.text}
-            left={msg.left}
-            joined={msg.joined}
-          />
-        ))}
-      </div>
-      <div className='write-wrapper'>
-        <form className='write' onSubmit={sendMessageHandler}>
-          <input
-            type='text'
-            placeholder='Send a message'
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-          />
-          <button className='send'>Send</button>
-        </form>
-      </div>
+      <Messages messages={messages} user={user} />
+      <WriteMessage
+        sendMessageHandler={sendMessageHandler}
+        message={message}
+        setMessage={setMessage}
+      />
     </div>
   );
 };
@@ -104,12 +66,9 @@ Chat.propTypes = {
   user: PropTypes.object,
   messages: PropTypes.array.isRequired,
   socket: PropTypes.object.isRequired,
-  newMessage: PropTypes.func.isRequired,
   sendMessage: PropTypes.func.isRequired,
-  userLeft: PropTypes.func.isRequired,
-  inactive: PropTypes.func.isRequired,
-  inactiveUser: PropTypes.func.isRequired,
-  setUsers: PropTypes.func.isRequired
+  setChatListeners: PropTypes.func.isRequired,
+  clearChatListeners: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -119,10 +78,7 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  newMessage,
   sendMessage,
-  userLeft,
-  inactive,
-  inactiveUser,
-  setUsers
+  setChatListeners,
+  clearChatListeners
 })(Chat);

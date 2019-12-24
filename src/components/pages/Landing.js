@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // Assets
@@ -7,50 +7,29 @@ import '../../assets/scss/Landing.scss';
 // Routing
 import { withRouter } from 'react-router-dom';
 
+// Components
+import ConnectForm from '../layout/ConnectForm';
+
 // Redux
 import { connect } from 'react-redux';
-import { joinChat, setUser } from '../../actions/user';
+import {
+  setLandingListeners,
+  clearLandingListeners
+} from '../../actions/socket';
 
-// Utils
-import toast from '../../utils/toast';
-
-const Landing = ({ socket, joinChat, setUser, history, user }) => {
-  const [uname, setUname] = useState('');
-  const joinChatHandler = e => {
-    e.preventDefault();
-    if (socket) {
-      if (uname.length > 0) {
-        if (socket.connected) {
-          joinChat(socket, uname, history);
-        } else {
-          toast(
-            'Uh uh!',
-            'Looks like server is unavailable ATM, please try again later.',
-            'danger'
-          );
-        }
-      }
-    }
-  };
+const Landing = ({
+  socket,
+  history,
+  user,
+  setLandingListeners,
+  clearLandingListeners
+}) => {
   useEffect(() => {
-    if (socket) {
-      socket.on('join-chat-success', user => {
-        setUser(user);
-        socket.emit('hm-users');
-      });
-      socket.on('username-taken', msg => {
-        toast('Bummer!', msg, 'danger');
-      });
-      socket.on('validation-error', error => {
-        toast('Uh uh!', error, 'danger');
-      });
-    }
+    if (socket) setLandingListeners(socket);
     return () => {
-      socket && socket.off('join-chat-success');
-      socket && socket.off('username-taken');
-      socket && socket.off('validation-error');
+      if (socket) clearLandingListeners(socket);
     };
-  }, [socket, setUser]);
+  }, [socket, setLandingListeners, clearLandingListeners]);
 
   // Redirect when user state is filled
   useEffect(() => {
@@ -61,27 +40,15 @@ const Landing = ({ socket, joinChat, setUser, history, user }) => {
   return (
     <div className='Landing'>
       <h1 className='welcome'>Welcome to UI chat, friend!</h1>
-      <form className='connect-box' onSubmit={joinChatHandler}>
-        <h3 className='title'>To start chatting, enter your username</h3>
-
-        <div className={`input-group ${uname.length > 0 ? 'active' : ''}`}>
-          <input
-            type='text'
-            value={uname}
-            onChange={e => setUname(e.target.value)}
-          />
-          <label>Username</label>
-        </div>
-        <button className='connect'>Connect</button>
-      </form>
+      <ConnectForm history={history} />
     </div>
   );
 };
 
 Landing.propTypes = {
-  joinChat: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired,
-  user: PropTypes.object
+  user: PropTypes.object,
+  setLandingListeners: PropTypes.func.isRequired,
+  clearLandingListeners: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -89,6 +56,7 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps, { joinChat, setUser })(
-  withRouter(Landing)
-);
+export default connect(mapStateToProps, {
+  setLandingListeners,
+  clearLandingListeners
+})(withRouter(Landing));
