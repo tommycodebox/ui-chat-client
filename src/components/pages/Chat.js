@@ -9,6 +9,7 @@ import { Redirect } from 'react-router-dom';
 
 // Components
 import Messages from '../layout/Messages';
+import Users from '../layout/Users';
 import WriteMessage from '../layout/WriteMessage';
 
 // Redux
@@ -53,6 +54,7 @@ const Chat = ({
   return (
     <div className='Chat'>
       <Messages messages={messages} user={user} />
+      <Users />
       <WriteMessage
         sendMessageHandler={sendMessageHandler}
         message={message}
